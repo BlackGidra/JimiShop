@@ -6,7 +6,7 @@ class Program
     public static void Main(String[] args)
     {
         //Welcome customer ---
-        //Say about special offer, buy 2 pies get one free ????
+        //Say about special offer, buy 2 pies get one free ???
         //Show menu ----
         //Ask what user wants to order ---
         //Get order ---
@@ -27,6 +27,7 @@ class Program
             new Menu { Name = "8 - Quiche Tarts", Price = 1.45m }
         };
         List<Order> orders = new List<Order>();
+        decimal totalPrice = 0;
 
         Console.WriteLine("Hello!");
         Console.WriteLine("Welcome to Pete Porker's Pie Emporium!");
@@ -50,8 +51,9 @@ class Program
                 Console.WriteLine("Your order:");
                 foreach (var ordered in orders)
                 {
-                    Console.WriteLine($"{ordered.Name} x{ordered.Quantity} - £{ordered.Price * ordered.Quantity:F2}");
+                    Console.WriteLine($"{ordered.Name} x{ordered.Quantity} - £{totalPrice:F2}");
                 }
+                Console.WriteLine($"Total price: £{totalPrice:F2}");
                 break;
             }
 
@@ -59,9 +61,15 @@ class Program
             int quantity = int.Parse(Console.ReadLine());
 
             var chosen = menu[orderNum - 1];
-            decimal totalPrice = chosen.Price * quantity;
+            decimal itemsPrice = chosen.Price * quantity;
 
-            Console.WriteLine($"You get {chosen.Name} for £{totalPrice:F2}");
+            if (orderNum == 2 && quantity > 2 || orderNum == 3 && quantity > 2 ||
+                    orderNum == 4 && quantity > 2 || orderNum == 5 && quantity > 2)
+            {
+                itemsPrice -= chosen.Price;
+            }
+
+            Console.WriteLine($"You get {chosen.Name} for £{itemsPrice:F2}");
             Console.Write("Is that right? (YES/NO): ");
             string conf = Console.ReadLine();
 
@@ -70,18 +78,19 @@ class Program
                 orders.Add(new Order
                 {
                     Name = chosen.Name,
-                    Price = chosen.Price,
+                    Price = itemsPrice,
                     Quantity = quantity
                 });
-
+                totalPrice += itemsPrice;
                 Console.WriteLine("Item added to your order!");
             }
 
             Console.WriteLine("Your current order:");
             foreach (var ordered in orders)
             {
-                Console.WriteLine($"{ordered.Name} x{ordered.Quantity} - £{ordered.Price * ordered.Quantity:F2}");
+                Console.WriteLine($"{ordered.Name} x{ordered.Quantity} - £{totalPrice:F2}");
             }
+            Console.WriteLine($"Total price: £{totalPrice:F2}");
         }
     }
 
